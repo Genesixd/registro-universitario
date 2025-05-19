@@ -2,7 +2,7 @@ package com.universidad.registro.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
-
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
