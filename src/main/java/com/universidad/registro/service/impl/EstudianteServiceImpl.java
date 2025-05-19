@@ -5,10 +5,11 @@ import com.universidad.registro.model.Estudiante;
 import com.universidad.registro.repository.EstudianteRepository;
 import com.universidad.registro.service.EstudianteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class EstudianteServiceImpl implements EstudianteService {
                 .build();
     }
 
+    @CacheEvict(value = "estudiantes", allEntries = true)
     @Override
     public EstudianteDTO crear(EstudianteDTO dto) {
         return toDTO(repository.save(toEntity(dto)));
@@ -49,11 +51,16 @@ public class EstudianteServiceImpl implements EstudianteService {
         return toDTO(estudiante);
     }
 
+    @Cacheable("estudiantes")
     @Override
     public List<EstudianteDTO> listar() {
-        return repository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return repository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
+    @CacheEvict(value = "estudiantes", allEntries = true)
     @Override
     public EstudianteDTO actualizar(Long id, EstudianteDTO dto) {
         Estudiante estudiante = repository.findById(id)
@@ -68,6 +75,7 @@ public class EstudianteServiceImpl implements EstudianteService {
         return toDTO(repository.save(estudiante));
     }
 
+    @CacheEvict(value = "estudiantes", allEntries = true)
     @Override
     public void eliminar(Long id) {
         repository.deleteById(id);

@@ -5,6 +5,8 @@ import com.universidad.registro.model.Materia;
 import com.universidad.registro.repository.MateriaRepository;
 import com.universidad.registro.service.MateriaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class MateriaServiceImpl implements MateriaService {
     }
 
     @Override
+    @CacheEvict(value = "materias", allEntries = true)
     public MateriaDTO crear(MateriaDTO dto) {
         return toDTO(repository.save(toEntity(dto)));
     }
@@ -48,11 +51,14 @@ public class MateriaServiceImpl implements MateriaService {
     }
 
     @Override
+    @Cacheable(value = "materias")
     public List<MateriaDTO> listar() {
+        System.out.println("🔥 Consultando base de datos de materias...");
         return repository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @CacheEvict(value = "materias", allEntries = true)
     public MateriaDTO actualizar(Long id, MateriaDTO dto) {
         Materia m = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Materia no encontrada"));
@@ -66,6 +72,7 @@ public class MateriaServiceImpl implements MateriaService {
     }
 
     @Override
+    @CacheEvict(value = "materias", allEntries = true)
     public void eliminar(Long id) {
         repository.deleteById(id);
     }
