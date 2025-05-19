@@ -2,6 +2,8 @@ package com.universidad.registro.controller;
 
 import com.universidad.registro.dto.EstudianteDTO;
 import com.universidad.registro.service.EstudianteService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -12,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/estudiantes")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "BearerAuth")
 public class EstudianteController {
 
     private final EstudianteService service;
